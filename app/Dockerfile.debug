@@ -1,0 +1,23 @@
+FROM python:3.10-slim
+
+EXPOSE 8000
+EXPOSE 5678
+
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE=1
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED=1
+
+# Install libraries
+RUN apt-get update -y
+RUN apt-get install -y\
+    build-essential\
+    libpq-dev
+# Install pip requirements
+COPY requirements.txt .
+RUN python -m pip install -r requirements.txt
+RUN python -m pip install debugpy -t /tmp
+
+WORKDIR /app
+
+CMD ["python", "/tmp/debugpy", "--wait-for-client", "--listen", "0.0.0.0:5678", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

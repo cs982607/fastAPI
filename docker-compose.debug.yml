@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  db:
+    container_name: db
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./volumes/postgre:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=gustjr12
+      - POSTGRES_DB=fastAPI_db
+      - TZ=Asia/Seoul
+      - PGTZ=Asia/Seoul
+  fastapi:
+    image: fastapi
+    build:
+      context: ./app
+      dockerfile: ./Dockerfile.debug
+    ports:
+      - 8000:8000
+      - 5678:5678
+    depends_on:
+      - db
+    volumes:
+      - ./app:/app
+    environment:
+      - TZ=Asia/Seoul

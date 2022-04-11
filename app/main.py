@@ -2,16 +2,20 @@ import uvicorn
 from typing import Optional
 from fastapi import FastAPI
 
-from common.config import conf
+
+app = FastAPI()
+
+@app.get("/")
+def root():
+    return {"Hello": "API"}
 
 
-def create_app():
+# @app.post("/user/", response_model=User)
+# def create_user(user: User):
+#     return user
 
-	app = FastAPI()
-
-	return app 
-
-app = create_app()
 
 if __name__ == "__main__":
-	uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
+
+
